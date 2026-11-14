@@ -1,0 +1,149 @@
+// ============================================================================
+// Material Consumption Intelligence System — Prisma schema
+//
+// Design rules baked into this schema:
+// 1. Stock is NEVER stored directly. Material has no "currentStock" column.
+//    Every movement is a Transaction row, and stock is always derived by
+//    summing signed transactions (see src/lib/stock.ts). This keeps the
+//    ledger fully auditable, exactly as requested.
+// 2. Nothing about specific chemicals/colours is modeled as an enum or a
+//    fixed list — Category, Shift, and ReasonCode are all plain tables the
+//    UI manages, so new materials/categories/shifts/reasons never require a
+//    code or schema change.
+// 3. Left room to grow into a full ERP later (multi-location, vendors as a
+//    first-class entity, bill-of-materials/production orders) without
+//    breaking this schema — see the comments near the bottom.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Role: "ADMIN" | "SUPERVISOR" | "OPERATOR"
+// MaterialStatus: "ACTIVE" | "INACTIVE" | "ARCHIVED"
+// TransactionType: "OPENING" | "PURCHASE" | "USAGE" | "RETURN" | "WASTAGE" | "ADJUSTMENT" | "TRANSFER"
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  materials   Material[]
+}
+
+model Material {
+  id             String         @id @default(cuid())
+  name           String
+  colourName     String?
+  colourQuantity Float?
+  colourUnit     String?
+  categoryId     String
+  category       Category       @relation(fields: [categoryId], references: [id])
+  unit           String
+  minimumStock   Float          @default(0)
+  unitCost       Float? // optional — enables inventory value on the executive dashboard
+  notes          String?
+  status         String         @default("ACTIVE")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  transactions Transaction[]
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([name])
+}
+
+model Shift {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  transactions Transaction[]
+}
+
+model ReasonCode {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  notes     String?
+  createdAt DateTime @default(now())
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id            String          @id @default(cuid())
+  date          DateTime
+  type          String
+  materialId    String
+  material      Material        @relation(fields: [materialId], references: [id])
+  // Always the magnitude of the movement for OPENING/PURCHASE/USAGE/RETURN/
+  // WASTAGE/TRANSFER. For ADJUSTMENT this is signed (+/-). See src/lib/stock.ts.
+  quantity      Float
+  shiftId       String?
+  shift         Shift?          @relation(fields: [shiftId], references: [id])
+  reasonId      String?
+  reason        ReasonCode?     @relation(fields: [reasonId], references: [id])
+  vendor        String?
+  invoiceNumber String?
+  batchNumber   String?
+  destination   String? // for TRANSFER
+  notes         String?
+  createdById   String?
+  createdBy     User?           @relation(fields: [createdById], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([materialId, date])
+  @@index([type])
+  @@index([date])
+  @@index([batchNumber])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  username     String   @unique
+  passwordHash String
+  role         String   @default("OPERATOR")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactions Transaction[]
+  auditLogs    AuditLog[]
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  entityType String // "Material" | "Transaction" | "User" | "Category" | "Shift" | "ReasonCode"
+  entityId   String
+  action     String // "CREATE" | "UPDATE" | "ARCHIVE" | "RESTORE" | "DELETE"
+  oldValue   String? // JSON snapshot
+  newValue   String? // JSON snapshot
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+// ----------------------------------------------------------------------------
+// Growth path to a full ERP (documented, not built, so today's schema
+// doesn't need to be redesigned when you get there):
+//   - Multi-location: add a `Location` model, add `locationId` to
+//     Transaction, and change TRANSFER to reference a `toLocationId`.
+//   - Vendors as records: add a `Vendor` model and swap the free-text
+//     `vendor` field on Transaction for a `vendorId` relation.
+//   - Production/BOM: add `ProductionOrder` and `BillOfMaterial` models
+//     that generate USAGE transactions automatically per finished unit.
+// None of these require touching Material, Category, or the ledger logic.
+// ----------------------------------------------------------------------------

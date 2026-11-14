@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      # Keeps the SQLite database file outside the container so it survives
+      # rebuilds/restarts. A fresh ./data folder is created next to this file.
+      - ./data:/app/data
+    environment:
+      DATABASE_URL: "file:/app/data/production.db"
+      SESSION_SECRET: "${SESSION_SECRET:-change-this-secret-before-real-use}"
+      NODE_ENV: "production"
+    restart: unless-stopped
