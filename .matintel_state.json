@@ -196,16 +196,16 @@
     "lines": 95
   },
   "src/components/dashboard/dashboard-client.tsx": {
-    "sha": "9db3eed5985639a54ca2d011b261da2569753b67",
-    "lines": 169
+    "sha": "7bcfb17eb6b47f6060141c7c16c5f27009301d4b",
+    "lines": 186
   },
   "src/components/executive/executive-client.tsx": {
     "sha": "2d0e63c3f603962a82756c0d8fdb2b0b51c576b2",
     "lines": 167
   },
   "src/components/layout/app-shell.tsx": {
-    "sha": "0df4c5d1d83564a422090e4e7036976911ff0302",
-    "lines": 141
+    "sha": "6e045f84353d9c5cfcd8fb8f66ed8e9e413f7c4b",
+    "lines": 212
   },
   "src/components/layout/theme-toggle.tsx": {
     "sha": "121d4b85781a6b1fc05684655219076111bfaefa",
@@ -224,8 +224,8 @@
     "lines": 208
   },
   "src/components/providers/query-provider.tsx": {
-    "sha": "8147d6b5866681b32ebe9b42e7e0f141d286198c",
-    "lines": 25
+    "sha": "b8b065b12255bbf7e40c422ee3f49c4afa28c63b",
+    "lines": 27
   },
   "src/components/providers/theme-provider.tsx": {
     "sha": "4ab3569cadbc6704a5288d6a425a33fdd7326640",
@@ -256,8 +256,8 @@
     "lines": 37
   },
   "src/components/transactions/entry-client.tsx": {
-    "sha": "2bcaa68a7721d729646be7a3a170329d86020a7c",
-    "lines": 48
+    "sha": "071038e55b74c55657563555eb3fe64bc3c045d3",
+    "lines": 52
   },
   "src/components/transactions/transaction-form.tsx": {
     "sha": "d23d14bd6bf7b53215db8f6d711eb98cb6eb5be9",

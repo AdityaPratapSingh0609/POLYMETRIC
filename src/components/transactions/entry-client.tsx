@@ -20,25 +20,29 @@ const TABS: Array<{ value: TransactionTypeValue; label: string; roles: string[] 
 export function EntryClient() {
   const { data: user } = useCurrentUser();
   const availableTabs = TABS.filter((t) => !user || t.roles.includes(user.role));
+  const [activeTab, setActiveTab] = React.useState<TransactionTypeValue>("USAGE");
+
+  // Keep activeTab aligned with allowed permissions
+  const currentTab = availableTabs.some((t) => t.value === activeTab)
+    ? activeTab
+    : (availableTabs[0]?.value ?? "USAGE");
 
   return (
     <div>
       <PageHeader title="Daily entry" description="Record a movement in a few taps. Stock updates the moment you save." />
       <Card>
         <CardContent className="p-4 sm:p-6">
-          <Tabs defaultValue="USAGE">
+          <Tabs value={currentTab} onValueChange={(v) => setActiveTab(v as TransactionTypeValue)}>
             <TabsList className="flex-wrap">
               {availableTabs.map((t) => (
-                <TabsTrigger key={t.value} value={t.value}>
+                <TabsTrigger key={t.value} value={t.value} className="transition-all">
                   {t.label}
                 </TabsTrigger>
               ))}
             </TabsList>
-            {availableTabs.map((t) => (
-              <TabsContent key={t.value} value={t.value} className="mt-6">
-                <TransactionForm type={t.value} />
-              </TabsContent>
-            ))}
+            <div className="mt-6 transition-all duration-150">
+              <TransactionForm type={currentTab} />
+            </div>
           </Tabs>
         </CardContent>
       </Card>

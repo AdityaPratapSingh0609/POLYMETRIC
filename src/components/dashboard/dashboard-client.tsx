@@ -14,6 +14,23 @@ import { useDashboard } from "@/hooks/use-intelligence";
 import { transactionTypeLabel } from "@/lib/constants";
 import { formatDate, formatQuantity } from "@/lib/utils";
 
+function MovementBadge({ type }: { type: string }) {
+  if (type === "PURCHASE" || type === "RETURN" || type === "OPENING") {
+    return <Badge variant="success" className="font-mono text-[11px]">{transactionTypeLabel(type)}</Badge>;
+  }
+  if (type === "WASTAGE") {
+    return <Badge variant="destructive" className="font-mono text-[11px]">{transactionTypeLabel(type)}</Badge>;
+  }
+  if (type === "ADJUSTMENT") {
+    return (
+      <Badge variant="secondary" className="font-mono text-[11px] border border-amber-500/30 text-amber-600 dark:text-amber-400">
+        {transactionTypeLabel(type)}
+      </Badge>
+    );
+  }
+  return <Badge variant="outline" className="font-mono text-[11px]">{transactionTypeLabel(type)}</Badge>;
+}
+
 export function DashboardClient() {
   const { data, isPending } = useDashboard();
 
@@ -154,7 +171,7 @@ export function DashboardClient() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2 whitespace-nowrap">
-                    <Badge variant="outline">{transactionTypeLabel(t.type)}</Badge>
+                    <MovementBadge type={t.type} />
                     <span className="font-tabular text-sm">{formatQuantity(t.quantity, t.material.unit)}</span>
                   </div>
                 </li>
