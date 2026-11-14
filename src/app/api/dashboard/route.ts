@@ -58,7 +58,8 @@ export async function GET() {
       where: { type: "USAGE", date: { gte: startOfMonth, lte: now } },
       _sum: { quantity: true },
     });
-    const materialMap = new Map(activeList.map((m) => [m.id, m]));
+    const allMaterialsList = await prisma.material.findMany();
+    const materialMap = new Map(allMaterialsList.map((m) => [m.id, m]));
     const topConsumed = monthUsageRows
       .map((r) => ({
         id: r.materialId,

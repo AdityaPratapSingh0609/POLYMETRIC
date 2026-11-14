@@ -108,8 +108,8 @@
     "lines": 30
   },
   "src/app/api/dashboard/route.ts": {
-    "sha": "85fdf79df2753206a2f810d849b6b52ad722c52d",
-    "lines": 104
+    "sha": "487adf45bb7addf6a177ce0c894d46a4fe4e2fa0",
+    "lines": 105
   },
   "src/app/api/materials/route.ts": {
     "sha": "22c4e48a5bf16b400437ac9e185a4ace02252c8e",
@@ -184,8 +184,8 @@
     "lines": 6
   },
   "src/components/analytics/analytics-client.tsx": {
-    "sha": "baaaee8425388f98b819ef0dca6a266490380c0c",
-    "lines": 292
+    "sha": "0f292635e5b31091bcc129afa3016109cf59c80b",
+    "lines": 308
   },
   "src/components/audit/audit-log-client.tsx": {
     "sha": "17490f069520facc4d1360b252b186696478aaa0",
@@ -220,8 +220,8 @@
     "lines": 232
   },
   "src/components/materials/materials-client.tsx": {
-    "sha": "a4d60cff45f4f75fa25f66286c7b878962c5c68e",
-    "lines": 190
+    "sha": "239fe6b2187becec146bb5c4d3ab1c81c1732f13",
+    "lines": 208
   },
   "src/components/providers/query-provider.tsx": {
     "sha": "8147d6b5866681b32ebe9b42e7e0f141d286198c",
@@ -232,8 +232,8 @@
     "lines": 10
   },
   "src/components/reports/reports-client.tsx": {
-    "sha": "ae4079a6a6683bbe116e2560f42464ffcfed37a4",
-    "lines": 225
+    "sha": "0a4bae4b2a13d72e0ce0a7b8bbe0c58f63eeb558",
+    "lines": 239
   },
   "src/components/settings/settings-client.tsx": {
     "sha": "7121e6ea85ed5b15678031e883ff6b3cdf657193",
@@ -260,8 +260,8 @@
     "lines": 48
   },
   "src/components/transactions/transaction-form.tsx": {
-    "sha": "b117d657b172d240737a6a49d4f22a048e6ae4a5",
-    "lines": 216
+    "sha": "d23d14bd6bf7b53215db8f6d711eb98cb6eb5be9",
+    "lines": 250
   },
   "src/components/transactions/transactions-client.tsx": {
     "sha": "ad709ce62be1f862185d7e393bf73afbd45eaffb",

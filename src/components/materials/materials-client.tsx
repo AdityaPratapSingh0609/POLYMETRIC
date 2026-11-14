@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Plus, MoreHorizontal, Search } from "lucide-react";
+import { Plus, MoreHorizontal, Search, Pencil } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
@@ -29,10 +29,17 @@ function StatusBadge({ status }: { status: string }) {
   return <Badge variant="outline">Archived</Badge>;
 }
 
-function RowActions({ material }: { material: MaterialWithStock }) {
+function RowActions({
+  material,
+  onEdit,
+}: {
+  material: MaterialWithStock;
+  onEdit: (m: MaterialWithStock) => void;
+}) {
   const { data: user } = useCurrentUser();
   const update = useUpdateMaterial(material.id);
   const isAdmin = user?.role === "ADMIN";
+  const canEdit = user?.role === "ADMIN" || user?.role === "SUPERVISOR";
 
   return (
     <DropdownMenu>
@@ -45,6 +52,11 @@ function RowActions({ material }: { material: MaterialWithStock }) {
         <DropdownMenuItem asChild>
           <Link href={`/materials/${material.id}`}>View ledger</Link>
         </DropdownMenuItem>
+        {canEdit && (
+          <DropdownMenuItem onClick={() => onEdit(material)}>
+            <Pencil className="mr-2 size-4" /> Edit details
+          </DropdownMenuItem>
+        )}
         {material.status === "ACTIVE" && (
           <DropdownMenuItem onClick={() => update.mutate({ status: "INACTIVE" })}>Deactivate</DropdownMenuItem>
         )}
@@ -173,7 +185,13 @@ export function MaterialsClient() {
                       <StatusBadge status={m.status} />
                     </TableCell>
                     <TableCell>
-                      <RowActions material={m} />
+                      <RowActions
+                        material={m}
+                        onEdit={(mat) => {
+                          setEditing(mat);
+                          setFormOpen(true);
+                        }}
+                      />
                     </TableCell>
                   </TableRow>
                 );

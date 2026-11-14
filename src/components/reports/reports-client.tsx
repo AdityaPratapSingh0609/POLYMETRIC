@@ -120,8 +120,22 @@ export function ReportsClient() {
             <SelectItem value="batch">Batch summary</SelectItem>
           </SelectContent>
         </Select>
-        <Input type="date" value={range.from} onChange={(e) => setRange((r) => ({ ...r, from: e.target.value }))} />
-        <Input type="date" value={range.to} onChange={(e) => setRange((r) => ({ ...r, to: e.target.value }))} />
+        <Input
+          type="date"
+          value={range.from}
+          onChange={(e) => {
+            setRange((r) => ({ ...r, from: e.target.value }));
+            if (type !== "batch" && type !== "custom") setType("custom");
+          }}
+        />
+        <Input
+          type="date"
+          value={range.to}
+          onChange={(e) => {
+            setRange((r) => ({ ...r, to: e.target.value }));
+            if (type !== "batch" && type !== "custom") setType("custom");
+          }}
+        />
         <select className="h-10 rounded-md border border-input bg-background px-3 text-sm" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
           <option value="">All categories</option>
           {categories?.map((c: { id: string; name: string }) => (

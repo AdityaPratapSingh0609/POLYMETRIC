@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMaterials, useCreateTransaction } from "@/hooks/use-inventory";
 import { useSettingsResource } from "@/hooks/use-admin";
-import { todayDateInputValue } from "@/lib/utils";
+import { formatQuantity, todayDateInputValue } from "@/lib/utils";
 import type { TransactionTypeValue } from "@/lib/constants";
 
 export function TransactionForm({ type }: { type: TransactionTypeValue }) {
@@ -39,6 +39,22 @@ export function TransactionForm({ type }: { type: TransactionTypeValue }) {
   const showDirection = type === "ADJUSTMENT";
 
   const selectedMaterial = materials?.find((m) => m.id === form.materialId);
+
+  // Auto-select default shift when shifts load
+  React.useEffect(() => {
+    if (!form.shiftId && shifts && Array.isArray(shifts)) {
+      const def = shifts.find((s: { id: string; name: string; isDefault?: boolean }) => s.isDefault);
+      if (def) {
+        setForm((f) => ({ ...f, shiftId: def.id }));
+      }
+    }
+  }, [shifts, form.shiftId]);
+
+  const isOverStock =
+    (type === "USAGE" || type === "WASTAGE") &&
+    selectedMaterial &&
+    Number(form.quantity) > 0 &&
+    Number(form.quantity) > selectedMaterial.currentStock;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -96,7 +112,17 @@ export function TransactionForm({ type }: { type: TransactionTypeValue }) {
             <SelectContent>
               {materials?.map((m) => (
                 <SelectItem key={m.id} value={m.id}>
-                  {m.name}
+                  <div className="flex w-full items-center justify-between gap-3 text-left">
+                    <span>
+                      <span className="font-medium">{m.name}</span>
+                      {m.colourName && (
+                        <span className="ml-1.5 text-xs text-muted-foreground">({m.colourName})</span>
+                      )}
+                    </span>
+                    <span className="text-xs font-tabular text-muted-foreground">
+                      {formatQuantity(m.currentStock, m.unit)}
+                    </span>
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -132,9 +158,17 @@ export function TransactionForm({ type }: { type: TransactionTypeValue }) {
             />
           </div>
           {selectedMaterial && (
-            <p className="text-xs text-muted-foreground">
-              Current stock: {selectedMaterial.currentStock.toLocaleString("en-IN")} {selectedMaterial.unit}
-            </p>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">
+                Current stock: {selectedMaterial.currentStock.toLocaleString("en-IN")} {selectedMaterial.unit}
+              </p>
+              {isOverStock && (
+                <p className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+                  <span>⚠️</span>
+                  <span>Quantity ({form.quantity} {selectedMaterial.unit}) exceeds current recorded stock ({formatQuantity(selectedMaterial.currentStock, selectedMaterial.unit)})</span>
+                </p>
+              )}
+            </div>
           )}
         </div>
 

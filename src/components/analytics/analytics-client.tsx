@@ -82,27 +82,35 @@ export function AnalyticsClient() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.momComparison
-                    .filter((m) => m.currentMonth > 0 || m.previousMonth > 0)
-                    .sort((a, b) => b.currentMonth - a.currentMonth)
-                    .map((m) => (
-                      <TableRow key={m.materialId}>
-                        <TableCell className="font-medium">
-                          <Link href={`/materials/${m.materialId}`} className="hover:underline">
-                            {m.name}
-                          </Link>
-                        </TableCell>
-                        <TableCell className="text-right font-tabular">{formatQuantity(m.currentMonth, m.unit)}</TableCell>
-                        <TableCell className="text-right font-tabular text-muted-foreground">{formatQuantity(m.previousMonth, m.unit)}</TableCell>
-                        <TableCell className={`text-right font-tabular ${m.difference >= 0 ? "text-destructive" : "text-success"}`}>
-                          {m.difference >= 0 ? "+" : ""}
-                          {formatQuantity(m.difference, m.unit)}
-                        </TableCell>
-                        <TableCell className={`text-right font-tabular ${m.percentChange >= 0 ? "text-destructive" : "text-success"}`}>
-                          {formatPercent(m.percentChange)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                  {data.momComparison.filter((m) => m.currentMonth > 0 || m.previousMonth > 0).length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="py-8 text-center text-sm text-muted-foreground">
+                        No consumption recorded in the current or previous month yet.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    data.momComparison
+                      .filter((m) => m.currentMonth > 0 || m.previousMonth > 0)
+                      .sort((a, b) => b.currentMonth - a.currentMonth)
+                      .map((m) => (
+                        <TableRow key={m.materialId}>
+                          <TableCell className="font-medium">
+                            <Link href={`/materials/${m.materialId}`} className="hover:underline">
+                              {m.name}
+                            </Link>
+                          </TableCell>
+                          <TableCell className="text-right font-tabular">{formatQuantity(m.currentMonth, m.unit)}</TableCell>
+                          <TableCell className="text-right font-tabular text-muted-foreground">{formatQuantity(m.previousMonth, m.unit)}</TableCell>
+                          <TableCell className={`text-right font-tabular ${m.difference >= 0 ? "text-destructive" : "text-success"}`}>
+                            {m.difference >= 0 ? "+" : ""}
+                            {formatQuantity(m.difference, m.unit)}
+                          </TableCell>
+                          <TableCell className={`text-right font-tabular ${m.percentChange >= 0 ? "text-destructive" : "text-success"}`}>
+                            {formatPercent(m.percentChange)}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
@@ -125,27 +133,35 @@ export function AnalyticsClient() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.trends
-                    .filter((t) => t.months.some((mo) => mo.value > 0))
-                    .map((t) => (
-                      <TableRow key={t.materialId}>
-                        <TableCell className="font-medium">
-                          <Link href={`/materials/${t.materialId}`} className="hover:underline">
-                            {t.name}
-                          </Link>
-                        </TableCell>
-                        {t.months.map((mo) => (
-                          <TableCell key={mo.label} className="text-right font-tabular">
-                            {formatQuantity(mo.value, t.unit)}
+                  {data.trends.filter((t) => t.months.some((mo) => mo.value > 0)).length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={Math.max(3, (data.trends[0]?.months.length ?? 0) + 2)} className="py-8 text-center text-sm text-muted-foreground">
+                        Trends will appear once multiple months of movements are logged.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    data.trends
+                      .filter((t) => t.months.some((mo) => mo.value > 0))
+                      .map((t) => (
+                        <TableRow key={t.materialId}>
+                          <TableCell className="font-medium">
+                            <Link href={`/materials/${t.materialId}`} className="hover:underline">
+                              {t.name}
+                            </Link>
                           </TableCell>
-                        ))}
-                        <TableCell>
-                          <span className="inline-flex items-center gap-1.5 capitalize">
-                            <TrendIcon classification={t.classification} /> {t.classification.replace("-", " ")}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          {t.months.map((mo) => (
+                            <TableCell key={mo.label} className="text-right font-tabular">
+                              {formatQuantity(mo.value, t.unit)}
+                            </TableCell>
+                          ))}
+                          <TableCell>
+                            <span className="inline-flex items-center gap-1.5 capitalize">
+                              <TrendIcon classification={t.classification} /> {t.classification.replace("-", " ")}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
