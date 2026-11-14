@@ -43,13 +43,21 @@
     "sha": "14ce92624d0ef93173148ec2d91ab5498e242806",
     "lines": 10
   },
+  "PRD.md": {
+    "sha": "b3b69d127f17ce9996f0c0e5ddb1c1c617d6449f",
+    "lines": 155
+  },
   "README.md": {
-    "sha": "46607733cb4cdea8d9938fac242cf7d46f70fa1d",
-    "lines": 147
+    "sha": "527f1088fe6aacaf6c13dae08ab5610040de3b9c",
+    "lines": 177
   },
   "tailwind.config.ts": {
     "sha": "8f4b545f03b106008bb8bb602d3e96fb0a18d774",
     "lines": 90
+  },
+  "TRD.md": {
+    "sha": "405e321fef8148b5049c6f8ccdbb83a904448ecc",
+    "lines": 272
   },
   "tsconfig.json": {
     "sha": "85910a9cf242747a2eea3a672816f4569b8dc613",

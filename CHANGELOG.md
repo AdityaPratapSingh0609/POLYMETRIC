@@ -13,3 +13,9 @@
 - Files: 101, lines: 16147
 - Modified: src/components/dashboard/dashboard-client.tsx, src/components/layout/app-shell.tsx, src/components/providers/query-provider.tsx, src/components/transactions/entry-client.tsx
 - Note: Performance & UI: eliminate tab switching lag, cache tuning, prefetching, live status header, and single-form entry
+
+## [2026-11-14T13:38:37] Review
+- Files: 103, lines: 16604
+- Added: PRD.md, TRD.md
+- Modified: README.md
+- Note: Add production README, LICENSE, PRD, and TRD documentation
